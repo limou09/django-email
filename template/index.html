@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="/static/jquery-1.7.min.js"></script>
+	<script>
+		$(function(){
+			//当c1发生变化时
+			$('#c1').change(function(){
+				code = $(this).val();
+				$.get('/get_areas/',{'code':code}, function(data){
+					city_list = data.res;
+					//清空子标签
+					$('#c2').empty();
+					$('#c2').append('<option value="-1">请选择市<option>');
+					$('#c3').empty();
+					$('#c3').append('<option value="-1">请选择区县<option>');
+
+					// //追加子标签
+					for (var i=0;i<city_list.length;++i){
+						ele = '<option value="' + city_list[i].code + '">' + city_list[i].name +'</option>'
+						$('#c2').append(ele);
+					}
+				});
+			});
+
+			//当c2发生变化时
+			$('#c2').change(function(){
+				
+				$.get('/get_areas/',{'code':$(this).val()}, function(data){
+					city_list = data.res;
+
+					//清空子标签
+					$('#c3').empty();
+					$('#c3').append('<option value="-1">请选择区县<option>');
+
+					//追加子标签
+					for (var i=0;i<city_list.length; ++i){
+						
+						ele = '<option value="' + city_list[i].code + '">' + city_list[i].name +'</option>'
+						$('#c3').append(ele);
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+
+<select id="c1">
+	<option value="-1">请选择</option>
+	{% for city in citys %}
+		<option value="{{ city.area_code }}">{{ city.area_name }}</option>
+	{% endfor %}
+</select>
+
+<select id="c2">
+	<option value="-1">请选择市</option>
+</select>
+
+<select id="c3">
+	<option value="-1">请选择区县</option>
+</select>
+
+</body>
+</html>
